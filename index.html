@@ -3,23 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TransactionAttempt Ledger Visual Explainer</title>
+  <title>OIF Solver Transaction Hardening Roadmap</title>
   <style>
     :root {
-      --bg: #f5f7f8;
-      --panel: #ffffff;
+      --bg: #f4f6f7;
+      --paper: #ffffff;
       --ink: #17212b;
-      --muted: #5d6875;
-      --line: #d8dee6;
-      --bad: #c96b55;
-      --warn: #c58a31;
-      --good: #3d8162;
-      --blue: #3d7594;
-      --violet: #745f9d;
-      --shadow: 0 12px 30px rgba(23, 33, 43, 0.08);
+      --muted: #5b6572;
+      --line: #d9e0e6;
+      --red: #b95c4f;
+      --amber: #b77a22;
+      --green: #3f7f5d;
+      --blue: #356f96;
+      --teal: #347d84;
+      --purple: #71649a;
+      --shadow: 0 12px 28px rgba(23, 33, 43, 0.08);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -30,42 +33,43 @@
     }
 
     main {
-      width: min(1220px, calc(100vw - 32px));
+      width: min(1240px, calc(100vw - 32px));
       margin: 0 auto;
       padding: 34px 0 48px;
     }
 
     header {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 260px;
+      grid-template-columns: minmax(0, 1fr) 320px;
       gap: 22px;
       align-items: end;
       margin-bottom: 22px;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(32px, 5vw, 58px);
+      margin: 0 0 10px;
+      max-width: 820px;
+      font-size: clamp(34px, 5vw, 60px);
       line-height: 1.02;
       letter-spacing: 0;
     }
 
     .lede {
       margin: 0;
-      max-width: 820px;
+      max-width: 880px;
       color: var(--muted);
       font-size: 17px;
     }
 
-    .rating {
-      padding: 18px;
+    .score-card {
+      background: var(--paper);
       border: 1px solid var(--line);
-      background: var(--panel);
       border-radius: 8px;
       box-shadow: var(--shadow);
+      padding: 18px;
     }
 
-    .rating span {
+    .score-card span {
       display: block;
       color: var(--muted);
       font-size: 12px;
@@ -74,256 +78,305 @@
       letter-spacing: 0.08em;
     }
 
-    .rating strong {
-      display: block;
-      margin-top: 6px;
-      font-size: 34px;
+    .score-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .score-row strong {
+      font-size: 36px;
       line-height: 1;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 18px;
+    .score-row small {
+      color: var(--muted);
+      font-weight: 700;
     }
 
-    .panel {
-      background: var(--panel);
+    .section {
+      margin-top: 18px;
+      background: var(--paper);
       border: 1px solid var(--line);
       border-radius: 8px;
       box-shadow: var(--shadow);
-      padding: 18px;
+      padding: 20px;
     }
 
-    .panel h2 {
+    h2 {
       margin: 0 0 14px;
-      font-size: 22px;
+      font-size: 24px;
       letter-spacing: 0;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .state {
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--accent);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 16px;
+    }
+
+    .state h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .state p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .flow {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .node {
+    .flow-node {
       display: grid;
-      grid-template-columns: 38px minmax(0, 1fr);
+      grid-template-columns: 34px minmax(0, 1fr);
       gap: 10px;
-      min-height: 64px;
       align-items: start;
-      border: 1px solid var(--line);
-      border-left: 5px solid var(--accent);
+      min-height: 54px;
+      border: 1px solid #e1e6eb;
       border-radius: 8px;
-      background: #fbfcfd;
-      padding: 12px;
+      background: white;
+      padding: 10px;
     }
 
-    .icon {
-      width: 30px;
-      height: 30px;
+    .num {
+      width: 28px;
+      height: 28px;
       border-radius: 999px;
-      background: var(--accent);
-      color: white;
       display: grid;
       place-items: center;
-      font-size: 14px;
+      background: var(--accent);
+      color: white;
+      font-size: 13px;
       font-weight: 900;
     }
 
-    .node strong {
+    .flow-node strong {
       display: block;
-      font-size: 15px;
+      font-size: 14px;
       margin-bottom: 2px;
     }
 
-    .node p {
-      margin: 0;
+    .flow-node span {
+      display: block;
       color: var(--muted);
       font-size: 13px;
     }
 
     .arrow {
+      text-align: center;
       color: var(--muted);
       font-weight: 900;
-      text-align: center;
-      height: 18px;
       line-height: 18px;
     }
 
-    .ledger-wrap {
+    .ratings {
       display: grid;
-      grid-template-columns: 1fr 1.2fr 1fr;
-      gap: 12px;
-      align-items: center;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .stack {
-      display: grid;
-      gap: 10px;
-    }
-
-    .box {
+    .rating-step {
+      min-height: 90px;
       border: 1px solid var(--line);
+      border-top: 6px solid var(--accent);
+      border-radius: 8px;
       background: #fbfcfd;
-      border-radius: 8px;
-      padding: 12px;
-      min-height: 84px;
+      padding: 10px;
     }
 
-    .box h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
+    .rating-step strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 8px;
     }
 
-    .box p {
-      margin: 0;
+    .rating-step span {
       color: var(--muted);
-      font-size: 13px;
-    }
-
-    .ledger {
-      border: 2px solid #9bb9c9;
-      background: #f8fbfc;
-      border-radius: 8px;
-      padding: 14px;
-    }
-
-    .ledger h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      overflow: hidden;
-      border-radius: 6px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 8px;
-      border-bottom: 1px solid #e3e8ee;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #e9f1f5;
-      color: #344757;
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-weight: 700;
     }
 
-    tr:last-child td { border-bottom: 0; }
-
-    .pill {
-      display: inline-block;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 12px;
-    }
-
-    .planned { color: #745f9d; background: #eeeaf6; }
-    .broadcast { color: #3d7594; background: #e9f2f7; }
-    .confirmed { color: #3d8162; background: #e8f4ee; }
-    .indeterminate { color: #a06f24; background: #fbf0dd; }
-
-    .timeline {
+    .roadmap {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .stage {
-      position: relative;
-      min-height: 156px;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #fbfcfd;
-    }
-
-    .stage::after {
-      content: "→";
-      position: absolute;
-      right: -14px;
-      top: 62px;
-      color: var(--muted);
-      font-weight: 900;
-    }
-
-    .stage:last-child::after { display: none; }
-
-    .stage h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-
-    .stage p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .risk {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin-top: 10px;
     }
 
-    .risk-card {
+    .pr {
+      display: grid;
+      grid-template-columns: 92px 1fr 1fr 1fr 86px;
+      gap: 12px;
+      align-items: stretch;
       border: 1px solid var(--line);
-      border-top: 5px solid var(--accent);
+      border-left: 6px solid var(--accent);
+      border-radius: 8px;
       background: #fbfcfd;
-      border-radius: 8px;
       padding: 12px;
-      min-height: 140px;
     }
 
-    .risk-card h3 {
-      margin: 0 0 8px;
-      font-size: 16px;
-    }
-
-    .risk-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .footer-note {
-      margin-top: 18px;
-      padding: 18px;
-      border: 2px solid #bad3c5;
-      background: #f8fbf8;
+    .pr-id {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
       border-radius: 8px;
+      background: white;
+      border: 1px solid #e1e6eb;
+      text-align: center;
     }
 
-    .footer-note h2 {
-      margin: 0 0 8px;
+    .pr-id strong {
+      display: block;
       font-size: 22px;
     }
 
-    .footer-note p {
+    .pr-id span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .cell {
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #e1e6eb;
+      padding: 12px;
+      min-height: 112px;
+    }
+
+    .cell h4 {
+      margin: 0 0 6px;
+      color: #344250;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .cell p {
       margin: 0;
       color: var(--muted);
-      font-size: 16px;
+      font-size: 13px;
+    }
+
+    .impact {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #e1e6eb;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .impact strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .impact span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .manager-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .takeaway {
+      border: 1px solid var(--line);
+      border-top: 6px solid var(--accent);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 14px;
+    }
+
+    .takeaway h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .takeaway p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
     }
 
     @media (max-width: 980px) {
-      header, .grid, .ledger-wrap, .timeline, .risk {
+      header,
+      .split,
+      .manager-grid {
         grid-template-columns: 1fr;
       }
 
-      .stage::after {
-        display: none;
+      .ratings {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .pr {
+        grid-template-columns: 1fr;
+      }
+
+      .pr-id,
+      .impact {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      main {
+        width: min(100vw - 20px, 1240px);
+        padding-top: 20px;
+      }
+
+      .ratings {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   </style>
@@ -332,207 +385,234 @@
   <main>
     <header>
       <div>
-        <h1>Why We Need a TransactionAttempt Ledger</h1>
+        <h1>Transaction hardening roadmap</h1>
         <p class="lede">
-          The order state machine knows the business stage. It does not reliably know every transaction we tried. The ledger adds that missing delivery memory so recovery and future gas bumping can reason from durable evidence.
+          The goal is not to add a bigger retry loop. The goal is to make the solver remember every delivery attempt, reconcile against chain reality, and keep moving toward claim even when RPCs, crashes, gas spikes, or duplicate contract calls happen.
         </p>
       </div>
-      <div class="rating">
-        <span>Expected move</span>
-        <strong>6 → 7/10</strong>
-      </div>
+      <aside class="score-card">
+        <span>Production posture</span>
+        <div class="score-row">
+          <strong>6 / 10</strong>
+          <small>today</small>
+        </div>
+        <div class="score-row">
+          <strong>9 / 10</strong>
+          <small>after roadmap</small>
+        </div>
+      </aside>
     </header>
 
-    <section class="grid">
-      <div class="panel">
-        <h2>Today: One Hash Field Can Lose the Story</h2>
-        <div class="flow">
-          <div class="node" style="--accent: var(--blue)">
-            <div class="icon">1</div>
-            <div>
-              <strong>Solver builds fill transaction</strong>
-              <p>Fee policy and nonce are applied inside delivery.</p>
+    <section class="section">
+      <h2>What is risky today</h2>
+      <div class="split">
+        <article class="state" style="--accent: var(--red);">
+          <h3>Today: one local hash is treated like the whole truth</h3>
+          <p>
+            If the solver broadcasts a transaction and then crashes, times out, loses the RPC response, or later sees an idempotent contract revert, local state can stop matching what actually happened on-chain.
+          </p>
+          <div class="flow">
+            <div class="flow-node" style="--accent: var(--red);">
+              <div class="num">1</div>
+              <div><strong>Build and send tx</strong><span>The tx may be accepted by the RPC, but local persistence is not guaranteed.</span></div>
+            </div>
+            <div class="arrow">&darr;</div>
+            <div class="flow-node" style="--accent: var(--red);">
+              <div class="num">2</div>
+              <div><strong>Ambiguous result</strong><span>Timeout, nonce drift, crash, replacement, or duplicate contract call.</span></div>
+            </div>
+            <div class="arrow">&darr;</div>
+            <div class="flow-node" style="--accent: var(--red);">
+              <div class="num">3</div>
+              <div><strong>Order can stop locally</strong><span>The chain may already have fill/claim evidence, but recovery may not find it.</span></div>
             </div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--warn)">
-            <div class="icon">2</div>
-            <div>
-              <strong>RPC may accept the transaction</strong>
-              <p>The transaction can propagate even if a later write or read fails.</p>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--bad)">
-            <div class="icon">3</div>
-            <div>
-              <strong>Crash before order hash is stored</strong>
-              <p>The chain may have the tx, but the order still says there is no fill hash.</p>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--bad)">
-            <div class="icon">4</div>
-            <div>
-              <strong>Recovery has weak evidence</strong>
-              <p>It can only inspect hashes already stored on the order, so it may retry blindly or wait for a restart.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        </article>
 
-      <div class="panel">
-        <h2>After: Delivery Has Its Own Durable Memory</h2>
-        <div class="flow">
-          <div class="node" style="--accent: var(--violet)">
-            <div class="icon">1</div>
-            <div>
-              <strong>Persist planned attempt before broadcast</strong>
-              <p>Order id, tx type, chain, signer, nonce, fees, and tx payload are saved.</p>
+        <article class="state" style="--accent: var(--green);">
+          <h3>After: delivery memory plus chain authority</h3>
+          <p>
+            Each network send gets a durable attempt record. Recovery can rebuild missing order hashes from the ledger and then ask the chain what really completed.
+          </p>
+          <div class="flow">
+            <div class="flow-node" style="--accent: var(--green);">
+              <div class="num">1</div>
+              <div><strong>Persist planned and broadcast attempts</strong><span>We retain tx hash, nonce, stage, status, and timestamp outside the order lifecycle.</span></div>
+            </div>
+            <div class="arrow">&darr;</div>
+            <div class="flow-node" style="--accent: var(--green);">
+              <div class="num">2</div>
+              <div><strong>Classify outcomes correctly</strong><span>Confirmed, indeterminate, rejected, reverted, and already-done signals are handled differently.</span></div>
+            </div>
+            <div class="arrow">&darr;</div>
+            <div class="flow-node" style="--accent: var(--green);">
+              <div class="num">3</div>
+              <div><strong>Recover from chain reality</strong><span>If fill happened, continue to post-fill or claim instead of leaving funds stranded.</span></div>
             </div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--blue)">
-            <div class="icon">2</div>
-            <div>
-              <strong>Attach hash after RPC accepts</strong>
-              <p>The attempt becomes broadcast and can be queried by order, stage, nonce, status, or hash.</p>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--good)">
-            <div class="icon">3</div>
-            <div>
-              <strong>Monitor updates the attempt</strong>
-              <p>Confirmed, reverted, indeterminate, or submit-rejected outcomes are recorded.</p>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="node" style="--accent: var(--good)">
-            <div class="icon">4</div>
-            <div>
-              <strong>Recovery can restore missing order hashes</strong>
-              <p>If the order field is missing, recovery uses the ledger as fallback evidence.</p>
-            </div>
-          </div>
-        </div>
+        </article>
       </div>
     </section>
 
-    <section class="panel" style="margin-top: 18px;">
-      <h2>What the Ledger Adds</h2>
-      <div class="ledger-wrap">
-        <div class="stack">
-          <div class="box">
-            <h3>Order State</h3>
-            <p>Business truth: Executing, Executed, Settled, Finalized. This stays clean.</p>
-          </div>
-          <div class="box">
-            <h3>OIF Contracts</h3>
-            <p>On-chain truth: duplicate fill or claim is rejected by idempotency.</p>
-          </div>
-        </div>
-
-        <div class="ledger">
-          <h3>TransactionAttempt Ledger</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Stage</th>
-                <th>Nonce</th>
-                <th>Hash</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Fill</td>
-                <td>42</td>
-                <td>0xf1...</td>
-                <td><span class="pill broadcast">broadcast</span></td>
-              </tr>
-              <tr>
-                <td>Fill</td>
-                <td>42</td>
-                <td>0xa8...</td>
-                <td><span class="pill indeterminate">indeterminate</span></td>
-              </tr>
-              <tr>
-                <td>Claim</td>
-                <td>91</td>
-                <td>0xc3...</td>
-                <td><span class="pill confirmed">confirmed</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="stack">
-          <div class="box">
-            <h3>Recovery</h3>
-            <p>Looks up attempts when the order's hash field is missing or stale.</p>
-          </div>
-          <div class="box">
-            <h3>Future Bumping</h3>
-            <p>Replacement txs can link old attempt to new attempt instead of blind retrying.</p>
-          </div>
-        </div>
+    <section class="section">
+      <h2>Hardening rating after each fix</h2>
+      <div class="ratings">
+        <div class="rating-step" style="--accent: var(--red);"><strong>6.0</strong><span>Current supervised canary</span></div>
+        <div class="rating-step" style="--accent: var(--blue);"><strong>6.3</strong><span>PR 01: ledger foundation</span></div>
+        <div class="rating-step" style="--accent: var(--blue);"><strong>6.8</strong><span>PR 02: delivery instrumentation</span></div>
+        <div class="rating-step" style="--accent: var(--teal);"><strong>7.1</strong><span>PR 03: recovery fallback</span></div>
+        <div class="rating-step" style="--accent: var(--teal);"><strong>7.8</strong><span>PR 04: chain-aware recovery</span></div>
+        <div class="rating-step" style="--accent: var(--green);"><strong>8.1</strong><span>PR 05: idempotent reverts</span></div>
+        <div class="rating-step" style="--accent: var(--green);"><strong>8.6</strong><span>PR 06: gas bumping</span></div>
+        <div class="rating-step" style="--accent: var(--purple);"><strong>9.0</strong><span>PR 07: ops and chaos tests</span></div>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="--accent: var(--red);"></i> Manual supervision needed</span>
+        <span><i class="dot" style="--accent: var(--teal);"></i> Recovery becomes reliable</span>
+        <span><i class="dot" style="--accent: var(--green);"></i> Unattended production candidate</span>
       </div>
     </section>
 
-    <section class="panel" style="margin-top: 18px;">
-      <h2>The Lifecycle We Are Adding</h2>
-      <div class="timeline">
-        <div class="stage">
-          <h3><span class="pill planned">planned</span></h3>
-          <p>Saved after nonce and fee policy are known, before network broadcast.</p>
-        </div>
-        <div class="stage">
-          <h3><span class="pill broadcast">broadcast</span></h3>
-          <p>RPC accepted and returned a tx hash. The tx may still be pending.</p>
-        </div>
-        <div class="stage">
-          <h3><span class="pill confirmed">confirmed</span></h3>
-          <p>Receipt succeeded. Recovery can safely advance the business stage.</p>
-        </div>
-        <div class="stage">
-          <h3><span class="pill indeterminate">indeterminate</span></h3>
-          <p>RPC or monitor could not decide. Recovery should check again later.</p>
-        </div>
-        <div class="stage">
-          <h3><span class="pill planned">replacement ready</span></h3>
-          <p>Later PR: same nonce, bumped gas, linked via replacement_of/replaced_by.</p>
-        </div>
+    <section class="section">
+      <h2>Incremental PR path</h2>
+      <div class="roadmap">
+        <article class="pr" style="--accent: var(--blue);">
+          <div class="pr-id"><div><span>PR</span><strong>01</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>Order fields hold one tx hash per stage. If that field is missing or stale, recovery has little delivery history to use.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Add TransactionAttempt model, storage, recorder trait, minimal indexes, and tests. No delivery behavior changes yet.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>The codebase has a durable place to store delivery evidence without changing the business state machine.</p>
+          </div>
+          <div class="impact"><strong>Base</strong><span>enables all later fixes</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--blue);">
+          <div class="pr-id"><div><span>PR</span><strong>02</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>A submitted tx can become ambiguous if the RPC times out, returns a nonce error, or the monitor loses context.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Record planned, broadcast, rejected, indeterminate, confirmed, and reverted attempts at existing Alloy send and monitor points.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>Every real network send leaves an audit trail. Ambiguous delivery is visible instead of being compressed into order failure.</p>
+          </div>
+          <div class="impact"><strong>+0.5</strong><span>less blind retry</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--teal);">
+          <div class="pr-id"><div><span>PR</span><strong>03</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>If an order hash write is lost but the tx was broadcast, startup recovery may not know which transaction to inspect.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Wire handlers to the recorder and let recovery restore missing stage hashes from the best durable attempt.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>Crash windows shrink. Recovery can repair local state from the ledger and continue the lifecycle.</p>
+          </div>
+          <div class="impact"><strong>+0.3</strong><span>hash repair</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--teal);">
+          <div class="pr-id"><div><span>PR</span><strong>04</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>The solver can believe fill did not happen even when the contract log history proves it did.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Add chain-aware reconciliation for fill, post-fill, and claim. Recovery asks the contract/log history what actually completed.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>If funds are already committed on-chain, the solver advances toward claim instead of waiting on local assumptions.</p>
+          </div>
+          <div class="impact"><strong>+0.7</strong><span>fund recovery</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--green);">
+          <div class="pr-id"><div><span>PR</span><strong>05</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>OIF contracts prevent duplicate fill/claim, but duplicate calls can look like terminal failures to the solver.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Decode already-filled, already-claimed, and already-finalised signals as stage-complete outcomes.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>Contract idempotency becomes a recovery signal instead of a reason to stop the order.</p>
+          </div>
+          <div class="impact"><strong>8+</strong><span>production threshold</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--green);">
+          <div class="pr-id"><div><span>PR</span><strong>06</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>A tx can sit pending after a gas spike. Retrying without lineage can create confusion around which attempt won.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Add same-nonce gas bumping using the attempt ledger as the source of nonce, original tx, and replacement lineage.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>Stuck pending txs can be replaced deliberately, and recovery can still identify the winning attempt.</p>
+          </div>
+          <div class="impact"><strong>+0.5</strong><span>stuck tx escape</span></div>
+        </article>
+
+        <article class="pr" style="--accent: var(--purple);">
+          <div class="pr-id"><div><span>PR</span><strong>07</strong></div></div>
+          <div class="cell">
+            <h4>Today</h4>
+            <p>Operators can inspect logs, but there is limited first-class repair tooling and limited chaos coverage for crash windows.</p>
+          </div>
+          <div class="cell">
+            <h4>Fix</h4>
+            <p>Add admin repair surfaces, stuck-attempt visibility, metrics, alerts, and crash/RPC/gas-spike tests.</p>
+          </div>
+          <div class="cell">
+            <h4>After</h4>
+            <p>The system is not just more resilient; it is observable and repairable during production incidents.</p>
+          </div>
+          <div class="impact"><strong>9</strong><span>operational confidence</span></div>
+        </article>
       </div>
     </section>
 
-    <section class="panel" style="margin-top: 18px;">
-      <h2>Failures This Fix Reduces</h2>
-      <div class="risk">
-        <div class="risk-card" style="--accent: var(--bad)">
-          <h3>Crash After Broadcast</h3>
-          <p>Today the order may never store the hash. The ledger preserves the attempt and nonce.</p>
-        </div>
-        <div class="risk-card" style="--accent: var(--warn)">
-          <h3>RPC Ambiguity</h3>
-          <p>Timeouts become indeterminate attempts instead of lost context.</p>
-        </div>
-        <div class="risk-card" style="--accent: var(--blue)">
-          <h3>Nonce Drift</h3>
-          <p>We can see which nonce was used for each tx stage before deciding what to retry.</p>
-        </div>
-        <div class="risk-card" style="--accent: var(--good)">
-          <h3>Stuck Claim Path</h3>
-          <p>If fill happened but local state is incomplete, recovery has a better route to continue toward claim.</p>
-        </div>
+    <section class="section">
+      <h2>Manager summary</h2>
+      <div class="manager-grid">
+        <article class="takeaway" style="--accent: var(--red);">
+          <h3>Why this matters</h3>
+          <p>Solver capital is exposed when local state loses track of on-chain progress. The contract prevents duplicate execution, but it cannot make the off-chain solver continue to claim.</p>
+        </article>
+        <article class="takeaway" style="--accent: var(--blue);">
+          <h3>Why start with the ledger</h3>
+          <p>Gas bumping, chain reconciliation, and operator repair all need the same source of truth: durable transaction attempts. Building it first avoids a fragile retry-only design.</p>
+        </article>
+        <article class="takeaway" style="--accent: var(--green);">
+          <h3>What success looks like</h3>
+          <p>An order can survive RPC ambiguity, process restart, gas spike, and duplicate contract calls, then still converge to the correct final state and claim path.</p>
+        </article>
       </div>
-    </section>
-
-    <section class="footer-note">
-      <h2>What We Are Not Fixing Yet</h2>
-      <p>
-        This is the foundation. Same-nonce gas bumping, raw signed transaction rebroadcast, OIF idempotent revert decoding, and chain log scanners should come next. Without the ledger, those features would still be guessing from incomplete local state.
-      </p>
     </section>
   </main>
 </body>
